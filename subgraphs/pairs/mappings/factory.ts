@@ -5,7 +5,7 @@ import { PairCreated } from "../generated/Factory/Factory";
 import { fetchDecimals, fetchName, fetchSymbol } from "./utils/erc20";
 
 // Constants
-let FACTORY_ADDRESS = "0xca143ce32fe78f1f7019d7d551a6402fc5350c73";
+let FACTORY_ADDRESS = "0xB4cF380EAdcf29177b08058b6a9d84d4Ab38f00a";
 
 // BigNumber-like references
 let ZERO_BI = BigInt.fromI32(0);

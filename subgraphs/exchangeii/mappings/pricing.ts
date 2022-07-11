@@ -110,20 +110,20 @@ export function findBnbPerToken(token: Token): BigDecimal {
     // get tracked liquidity - will be 0 if neither is in whitelist
     totalLiquidityBNB = pair.reserve0.plus(pair.reserve1);
     pairreserveBNB = pair.reserve0.times(totalLiquidityBNB)
-   // if (pair.token0 == token.id) { // && pairreserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
+    if (pair.token0 == token.id) { // && pairreserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
        
   //   let token1 = Token.load(pair.token1);
       // tokenderivedBNB = pair.reserve1.div(pair.reserve0)
       return pairreserveBNB.div(pair.reserve1 as BigDecimal); // return token1 per our token * BNB per token 1
-  //  }
+    }
 
     totalLiquidityBNB = pair.reserve1.plus(pair.reserve0);
     pairreserveBNB = pair.reserve1.times(totalLiquidityBNB)
-  //  if (pair.token1 == token.id) { // && pairreserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
+    if (pair.token1 == token.id) { // && pairreserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
      // let token0 = Token.load(pair.token0);
      // tokenderivedBNB = pair.reserve0.div(pair.reserve1)
       return pairreserveBNB.div(pair.reserve0 as BigDecimal); // return token0 per our token * BNB per token 0
-  //  }
+    }
   }
 }
 return ZERO_BD; // nothing was found return 0

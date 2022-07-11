@@ -8,6 +8,6 @@
   "scripts": {
     "codegen": "graph codegen subgraph.yaml",
     "build": "graph build subgraph.yaml",
-    "deploy": "graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/lottery subgraph.yaml"
+    "deploy": "graph deploy --access-token d4cd5a0c2746411e9c66e2b81670078b --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ mrandall101/zolaswaplottery subgraph.yaml"
   }
 }

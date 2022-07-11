@@ -1,14 +1,14 @@
 specVersion: 0.0.3
 description: MasterChefV2
-repository: https://github.com/pancakeswap/pancakeswapswap-subgraph
+repository: https://github.com/mrandall101/zolaswap-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: MasterChefV2
-    network: bsc
+    network: matic
     source:
-      address: "0xa5f8C5Dbd5F286960b9d90548680aE5ebFf07652"
+      address: "0xDA5B294F6a8Af4236F853D17d33ba584D7787f10"
       abi: MasterChefV2
       startBlock: 17047980
     mapping:

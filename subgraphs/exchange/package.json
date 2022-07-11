@@ -1,6 +1,6 @@
 {
   "name": "exchange",
-  "description": "PancakeSwap Subgraph",
+  "description": "ZolaSwap Subgraph",
   "version": "1.0.0",
   "repository": "git@github.com:pancakeswap/pancake-subgraph.git",
   "author": "PancakeSwap",
@@ -8,6 +8,6 @@
   "scripts": {
     "codegen": "graph codegen subgraph.yaml",
     "build": "graph build subgraph.yaml",
-    "deploy": "graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/exchange subgraph.yaml"
+    "deploy": "graph deploy --access-token 4cf5e5226f114a40b64c834c95cce23b --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ mrandall101/zolaswapexchange subgraph.yaml"
   }
 }
