@@ -170,7 +170,7 @@ export function handleSync(event: Sync): void {
 
   // reset factory liquidity by subtracting only tracked liquidity
   pancake.totalLiquidityBNB = pair.reserve0.plus(pair.reserve1);
-  pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.minus(pair.trackedReserveBNB as BigDecimal);
+  // pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.minus(pair.trackedReserveBNB as BigDecimal);
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
