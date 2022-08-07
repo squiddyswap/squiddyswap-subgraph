@@ -1,6 +1,6 @@
 specVersion: 0.0.2
-description: ZolaSwap is a decentralized protocol for automated token exchange on Polygon Network.
-repository: https://github.com/zolaswap
+description: SquiddySwap is a decentralized protocol for automated token exchange on Polygon Network.
+repository: https://github.com/squiddyswap
 schema:
   file: ./schema.graphql
 dataSources:
@@ -8,9 +8,9 @@ dataSources:
     name: Factory
     network: matic
     source:
-      address: '0xB4cF380EAdcf29177b08058b6a9d84d4Ab38f00a'
+      address: '0x95438c52aC1D47be21E1872d4c9dC1b8FC21c1ea'
       abi: Factory
-      startBlock: 29095386
+      startBlock: 1000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
