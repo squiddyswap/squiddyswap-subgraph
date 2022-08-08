@@ -25,32 +25,25 @@ type Bundle @entity {
   "BNB price, in USD"
   bnbPrice: BigDecimal!
 }
-
 type Token @entity {
   id: ID!
-
   "Name"
   name: String!
   "Symbol"
   symbol: String!
   "Decimals"
   decimals: BigInt!
-
   # token specific volume
   tradeVolume: BigDecimal!
   tradeVolumeUSD: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
-
   # transactions across all pairs
   totalTransactions: BigInt!
-
   # liquidity across all pairs
   totalLiquidity: BigDecimal!
-
   # derived prices
   derivedBNB: BigDecimal
   derivedUSD: BigDecimal
-
   # derived fields
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
   pairDayDataBase: [PairDayData!]! @derivedFrom(field: "token0")
@@ -58,19 +51,15 @@ type Token @entity {
   pairBase: [Pair!]! @derivedFrom(field: "token0")
   pairQuote: [Pair!]! @derivedFrom(field: "token1")
 }
-
 type Pair @entity {
   id: ID!
-
   name: String!
-
   # mirrored from the smart contract
   token0: Token!
   token1: Token!
   reserve0: BigDecimal!
   reserve1: BigDecimal!
   totalSupply: BigDecimal!
-
   # derived liquidity
   reserveBNB: BigDecimal!
   reserveUSD: BigDecimal!
@@ -78,27 +67,22 @@ type Pair @entity {
   # Price in terms of the asset pair
   token0Price: BigDecimal!
   token1Price: BigDecimal!
-
   # lifetime volume stats
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   volumeUSD: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
   totalTransactions: BigInt!
-
   block: BigInt!
   timestamp: BigInt!
-
   # derived fields
   pairHourData: [PairHourData!]! @derivedFrom(field: "pair")
   mints: [Mint!]! @derivedFrom(field: "pair")
   burns: [Burn!]! @derivedFrom(field: "pair")
   swaps: [Swap!]! @derivedFrom(field: "pair")
 }
-
 type Transaction @entity {
   id: ID!
-
   block: BigInt!
   timestamp: BigInt!
   # This is not the reverse of Mint.transaction; it is only used to
@@ -107,18 +91,15 @@ type Transaction @entity {
   burns: [Burn]!
   swaps: [Swap]!
 }
-
 type Mint @entity {
   # transaction hash + "-" + index in mints Transaction array
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
-
   # populated from the primary Transfer event
   to: Bytes!
   liquidity: BigDecimal!
-
   # populated from the Mint event
   sender: Bytes
   amount0: BigDecimal
@@ -126,22 +107,18 @@ type Mint @entity {
   logIndex: BigInt
   # derived amount based on available prices of tokens
   amountUSD: BigDecimal
-
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: Bytes
   feeLiquidity: BigDecimal
 }
-
 type Burn @entity {
   # transaction hash + "-" + index in mints Transaction array
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
-
   # populated from the primary Transfer event
   liquidity: BigDecimal!
-
   # populated from the Burn event
   sender: Bytes
   amount0: BigDecimal
@@ -150,22 +127,18 @@ type Burn @entity {
   logIndex: BigInt
   # derived amount based on available prices of tokens
   amountUSD: BigDecimal
-
   # mark uncomplete in BNB case
   needsComplete: Boolean!
-
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: Bytes
   feeLiquidity: BigDecimal
 }
-
 type Swap @entity {
   # transaction hash + "-" + index in swaps Transaction array
   id: ID!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
-
   # populated from the Swap event
   sender: Bytes!
   from: Bytes! # the EOA that initiated the txn
@@ -175,93 +148,100 @@ type Swap @entity {
   amount1Out: BigDecimal!
   to: Bytes!
   logIndex: BigInt
-
   # derived info
   amountUSD: BigDecimal!
 }
-
 type PancakeDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
-
   date: Int!
-
   dailyVolumeBNB: BigDecimal!
   dailyVolumeUSD: BigDecimal!
   dailyVolumeUntracked: BigDecimal!
-
   totalVolumeBNB: BigDecimal!
   totalLiquidityBNB: BigDecimal!
   totalVolumeUSD: BigDecimal! # Accumulate at each trade, not just calculated off whatever totalVolume is. making it more accurate as it is a live conversion
   totalLiquidityUSD: BigDecimal!
-
   totalTransactions: BigInt!
 }
-
 type PairHourData @entity {
   id: ID!
-
   hourStartUnix: Int! # unix timestamp for start of hour
   pair: Pair!
-
   # reserves
   reserve0: BigDecimal!
   reserve1: BigDecimal!
-
   # total supply for LP historical returns
   totalSupply: BigDecimal!
-
   # derived liquidity
   reserveUSD: BigDecimal!
-
   # volume stats
   hourlyVolumeToken0: BigDecimal!
   hourlyVolumeToken1: BigDecimal!
   hourlyVolumeUSD: BigDecimal!
   hourlyTxns: BigInt!
 }
-
 type PairDayData @entity {
   id: ID!
-
   date: Int!
   pairAddress: Bytes!
   token0: Token!
   token1: Token!
-
   # reserves
   reserve0: BigDecimal!
   reserve1: BigDecimal!
-
   # total supply for LP historical returns
   totalSupply: BigDecimal!
-
   # derived liquidity
   reserveUSD: BigDecimal!
-
   # volume stats
   dailyVolumeToken0: BigDecimal!
   dailyVolumeToken1: BigDecimal!
   dailyVolumeUSD: BigDecimal!
   dailyTxns: BigInt!
 }
-
 type TokenDayData @entity {
   id: ID!
-
   date: Int!
   token: Token!
-
   # volume stats
   dailyVolumeToken: BigDecimal!
   dailyVolumeBNB: BigDecimal!
   dailyVolumeUSD: BigDecimal!
   dailyTxns: BigInt!
-
   # liquidity stats
   totalLiquidityToken: BigDecimal!
   totalLiquidityBNB: BigDecimal!
   totalLiquidityUSD: BigDecimal!
-
   # price stats
   priceUSD: BigDecimal!
+}
+type Block @entity {
+  "ID (hash)"
+  id: ID!
+  "Parent Hash"
+  parentHash: Bytes!
+  "Uncles Hash"
+  unclesHash: Bytes!
+  "Author"
+  author: Bytes!
+  "State Root"
+  stateRoot: Bytes!
+  "Transactions Root"
+  transactionsRoot: Bytes!
+  "Receipts Root"
+  receiptsRoot: Bytes!
+  "Number"
+  number: BigInt!
+  "Gas Used"
+  gasUsed: BigInt!
+  "Gas Limit"
+  gasLimit: BigInt!
+  "Timestamp"
+  timestamp: BigInt!
+  "Difficulty"
+  difficulty: BigInt!
+  "Total Difficulty"
+  totalDifficulty: BigInt!
+  "Size"
+  size: BigInt
 }

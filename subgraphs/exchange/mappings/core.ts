@@ -10,7 +10,8 @@ import {
   Swap as SwapEvent,
   Bundle,
 } from "../generated/schema";
-import { Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair";
+import { Mint, Burn, Swap, Transfer, Sync } from "../generated/templates/Pair/Pair"; 
+import { handleBlock } from "./blocks";
 import { updatePairDayData, updateTokenDayData, updatePancakeDayData, updatePairHourData } from "./dayUpdates";
 import { getBnbPriceInUSD, findBnbPerToken, getTrackedVolumeUSD, getTrackedLiquidityUSD } from "./pricing";
 import { convertTokenToDecimal, ADDRESS_ZERO, FACTORY_ADDRESS, ONE_BI, ZERO_BD, BI_18 } from "./utils";
@@ -159,18 +160,19 @@ export function handleTransfer(event: Transfer): void {
   }
 
   transaction.save();
+
+  // save block info
+  handleBlock(event.block);
 }
 
 export function handleSync(event: Sync): void {
-  
   let pair = Pair.load(event.address.toHex());
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
   let pancake = PancakeFactory.load(FACTORY_ADDRESS);
 
   // reset factory liquidity by subtracting only tracked liquidity
-  pancake.totalLiquidityBNB = pair.reserve0.plus(pair.reserve1);
-  // pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.minus(pair.trackedReserveBNB as BigDecimal);
+  pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.minus(pair.trackedReserveBNB as BigDecimal);
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -188,10 +190,6 @@ export function handleSync(event: Sync): void {
   bundle.bnbPrice = getBnbPriceInUSD();
   bundle.save();
 
-  // get tracked liquidity - will be 0 if neither is in whitelist
-  let trackedLiquidityBNB: BigDecimal;
-  trackedLiquidityBNB = pair.reserve0.plus(pair.reserve1);
-
   let t0DerivedBNB = findBnbPerToken(token0 as Token);
   token0.derivedBNB = t0DerivedBNB;
   token0.derivedUSD = t0DerivedBNB.times(bundle.bnbPrice);
@@ -202,7 +200,8 @@ export function handleSync(event: Sync): void {
   token1.derivedUSD = t1DerivedBNB.times(bundle.bnbPrice);
   token1.save();
 
-  
+  // get tracked liquidity - will be 0 if neither is in whitelist
+  let trackedLiquidityBNB: BigDecimal;
   if (bundle.bnbPrice.notEqual(ZERO_BD)) {
     trackedLiquidityBNB = getTrackedLiquidityUSD(
       bundle as Bundle,
@@ -214,8 +213,6 @@ export function handleSync(event: Sync): void {
   } else {
     trackedLiquidityBNB = ZERO_BD;
   }
-
-  // trackedLiquidityBNB = pair.reserve0.plus(pair.reserve1);
 
   // use derived amounts within pair
   pair.trackedReserveBNB = trackedLiquidityBNB;
@@ -237,6 +234,9 @@ export function handleSync(event: Sync): void {
   pancake.save();
   token0.save();
   token1.save();
+
+  // save block info
+  handleBlock(event.block);
 }
 
 export function handleMint(event: Mint): void {
@@ -287,6 +287,9 @@ export function handleMint(event: Mint): void {
   updatePancakeDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
+
+  // save block info
+  handleBlock(event.block);
 }
 
 export function handleBurn(event: Burn): void {
@@ -342,6 +345,9 @@ export function handleBurn(event: Burn): void {
   updatePancakeDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
+
+  // save block info
+  handleBlock(event.block);
 }
 
 export function handleSwap(event: Swap): void {
@@ -495,4 +501,7 @@ export function handleSwap(event: Swap): void {
     amount1Total.times(token1.derivedBNB as BigDecimal).times(bundle.bnbPrice)
   );
   token1DayData.save();
+
+  // save block info
+  handleBlock(event.block);
 }
